@@ -113,26 +113,19 @@ def is_full_house(hand):
 
 #test for three of a kind
 def is_three_kind(hand):
+    sample = hand[0].value
+    count = 1
 
-    count = 0
-
-    for i in hand:
-        if (hand[0].value == i.value):
+    for i in range(1,5):
+        if (sample == hand[i].value):
             count += 1
-
+        else:
+            sample = hand[i].value
+            if(count != 3):
+                count = 1
     if (count != 3):
-
-        count = 0
-        for i in reversed(hand):
-            if (hand[-1].value == i.value):
-                count += 1
-
-        if (count != 3):
-            return 0
-
-    if ((hand[0].value == hand[1].value)):
-        if ((hand[-1].value == hand[-2].value)):
-            return 0
+        return 0
+        
 
     return 1
 
