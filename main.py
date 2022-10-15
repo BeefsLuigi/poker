@@ -3,34 +3,17 @@ import draw
 import random
 import check
 import highcard
+import hand
 
 deck = plain_52.create_deck()
 
 random.shuffle(deck)
 
-hand1 = draw.draw(deck, 5)
-hand2 = draw.draw(deck, 5)
+hand1 = hand.Hand(deck)
 
-score1 = check.type(hand1)
-score2 = check.type(hand2)
-
-print ('player 1 hand')
-for i in hand1:
+for i in hand1.draw:
     print(i.name)
 
-print ('')
-
-print ('player 2 hand')
-for i in hand2:
-    print(i.name)
-
-print ('')
-
-if (score1 > score2):
-    print ("player 1 wins")
-elif(score1 < score2):
-    print ("player 2 wins")
-else:
-    print('tie')
-
-
+print ('score: ' + str(hand1.score))
+print ('hand type: ' + hand1.hand_type)
+print ('highcard: ' + hand1.highcard.name)
