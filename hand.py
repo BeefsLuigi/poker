@@ -1,15 +1,30 @@
+from unicodedata import name
 import highcard
 import draw
 import check
 import highcard
 
-class Hand:
-    def __init__(self, deck):
+class player:
+    def __init__(self, deck, player_name):
         self.draw = draw.draw(deck, 5)
-        self.player_name = ''
+        self.player_name = player_name
+        self.player_token = -1
         self.score = check.type(self.draw)
         self.highcard = highcard.get(self.draw, self.score)
-        self.hand_type = Hand.get_hand_name(self.score)
+        self.hand_type = player.get_hand_name(self.score)
+
+
+    def show_hand(self):
+
+        print ('player name: ' + self.player_name)
+        print ('hand type: ' + self.hand_type)
+        print ('high card: ' + self.highcard.name)
+
+        for i in self.draw:
+            print (i.name)
+
+        print('')
+
 
     def get_hand_name(score):
 

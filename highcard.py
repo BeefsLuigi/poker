@@ -1,6 +1,4 @@
 import copy
-from re import S
-
 
 def get(hand, hand_type):
 
