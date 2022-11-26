@@ -6,7 +6,7 @@ import player
 
 deck = plain_52.create_deck()
 
-hand = draw.type(deck, 'full house')
+hand = draw.type(deck, 'two of a kind')
 
 test_player = player.player('Jim')
 

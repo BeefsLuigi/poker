@@ -29,26 +29,127 @@ class player:
         hand_straight = copy.copy(self.get_straight(hand_plus_dealer))
         hand_match = copy.copy(self.get_match(hand_plus_dealer))
 
+        # check for royal flush
         if (self.is_royal_flush(hand_flush, hand_straight) == 1):
+            
+            while(len(hand_flush) > 5):
+                hand_flush.pop(0)
+
+            for i in hand_flush:
+                print (i.name)
+
+            self.hand = hand_flush
+
             print('found royal flush')
+        # check for straight flush
         elif (self.is_straight_flush(hand_flush, hand_straight) == 1):
+            hand_flush = self.get_straight(hand_flush)
+
+            while(len(hand_flush) > 5):
+                hand_flush.pop(0)
+
+            for i in hand_flush:
+                print (i.name)
+
+            self.hand = hand_flush
+
             print('found straight flush')
+        # check for four of a kind
         elif(self.is_four_kind(hand_match) == 1):
+            for i in hand_match:
+                if (len(i) == 4):
+                    self.hand = i
+
+            for k in self.hand:
+                print (k.name)
+
             print('found four of a kind')
+        # check for full house
         elif(self.is_full_house(hand_match) == 1):
+            match_3 = None
+            match_2 = []
+
+            for i in hand_match:
+                if (len(i) == 3):
+                    match_3 = i
+
+            for i in hand_match:
+                if (len(i) == 2):
+                    match_2.append(i)
+            
+            self.hand = match_3 + match_2[-1]
+
+            for k in self.hand:
+                print (k.name)
+
             print('found full house')
+        # check for flush
         elif(hand_flush != None):
+            while(len(hand_flush) > 5):
+                hand_flush.pop(0)
+            
+            self.hand = hand_flush
+
+            for k in self.hand:
+                print (k.name)
+
             print ('found flush')
+        # check for straight
         elif(hand_straight != None):
+            while(len(hand_straight) > 5):
+                hand_straight.pop(0)
+            
+            self.hand = hand_straight
+
+            for k in self.hand:
+                print (k.name)
+
             print ('found straight')
+        # check for three of a kind
         elif(self.is_three_kind(hand_match) == 1):
+            match_3 = []
+
+            for i in hand_match:
+                if (len(i) == 3):
+                    match_3.append(i)
+
+            self.hand = match_3[-1]
+
+            for k in self.hand:
+                print (k.name)
+
             print ('found three of a kind')
+        # check for two pair
         elif(self.is_two_pair(hand_match)):
+            match_2 = []
+
+            for i in hand_match:
+                if (len(i) == 2):
+                    match_2.append(i)
+
+            self.hand = match_2[-1] + match_2[-2]
+
+            for k in self.hand:
+                print(k.name)
+
             print ('found two pair')
+        # check for two of a kind
         elif(self.is_two_kind(hand_match)):
+            match_2 = []
+
+            for i in hand_match:
+                if (len(i) == 2):
+                    match_2.append(i)
+
+            self.hand = match_2[-1]
+
+            for k in self.hand:
+                print(k.name)
+
             print ('found two of a kind')
+        # all that's left is the high card
         else:
-            print('tests failed')
+            print('only high card')
 
         pass
 
