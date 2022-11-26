@@ -1,3 +1,5 @@
+import copy
+
 
 def type(hand):
     hand.sort(key=lambda x: x.value)
@@ -47,11 +49,27 @@ def is_straight_flush(hand):
 #test for flush
 def is_flush(hand):
     
+    for i in range (4):
+        if (grab_suit(hand, i) != None):
+            return 1
+
+    return 0
+
+def grab_suit(hand, test_suit):
+    cards = []
 
     for i in hand:
-        if (i.suit != hand[0].suit):
-            return 0
-    return 1
+        if (i.suit == test_suit):
+            temp_card = copy
+
+            cards.append(i)
+
+    if (len(cards) >= 5):
+        return cards
+    else:
+        return None
+
+
 
 #test for straight
 def is_straight(hand):
