@@ -1,4 +1,3 @@
-from unicodedata import name
 import highcard
 import draw
 import check
@@ -18,12 +17,13 @@ class player:
         self.hand_type = 0
 
     # checks the player hand, trims it, and stores it for later
+    # also sets the hand type in the "self.score" and the highcard
     def check_hand(self, deal):
         self.s_f_flag = 0
 
-        self.hand.sort(key=lambda x: x.value)
+        hand_plus_dealer = self.draw + deal
 
-        hand_plus_dealer = self.hand + deal
+        hand_plus_dealer.sort(key=lambda x: x.value)
 
         hand_flush = copy.copy(self.get_flush(hand_plus_dealer))
         hand_straight = copy.copy(self.get_straight(hand_plus_dealer))
@@ -35,12 +35,12 @@ class player:
             while(len(hand_flush) > 5):
                 hand_flush.pop(0)
 
-            for i in hand_flush:
-                print (i.name)
-
             self.hand = hand_flush
 
-            print('found royal flush')
+            self.score = 10
+
+            self.highcard = hand_flush[-1]
+
         # check for straight flush
         elif (self.is_straight_flush(hand_flush, hand_straight) == 1):
             hand_flush = self.get_straight(hand_flush)
@@ -48,41 +48,56 @@ class player:
             while(len(hand_flush) > 5):
                 hand_flush.pop(0)
 
-            for i in hand_flush:
-                print (i.name)
-
             self.hand = hand_flush
+            self.score = 9
 
-            print('found straight flush')
+            self.highcard = hand_flush[-1]
+
         # check for four of a kind
         elif(self.is_four_kind(hand_match) == 1):
             for i in hand_match:
                 if (len(i) == 4):
                     self.hand = i
 
-            for k in self.hand:
-                print (k.name)
+            self.score = 8
 
-            print('found four of a kind')
+            self.highcard = self.hand[0]
+
+            for i in self.hand:
+                if (i.suit > self.highcard.suit):
+                        self.highcard = i
+
         # check for full house
         elif(self.is_full_house(hand_match) == 1):
-            match_3 = None
+            match_3 = []
             match_2 = []
 
             for i in hand_match:
                 if (len(i) == 3):
-                    match_3 = i
+                    match_3.append(i)
 
-            for i in hand_match:
-                if (len(i) == 2):
-                    match_2.append(i)
+            # Handles if there are 2 sets of three of a kind.
+            # If it finds 2 3's, it turns the smaller value on
+            # into a pair. If there isn't 2 three of a kind, it
+            # procedes as normal
+            if (len(match_3) > 1):
+                match_3[0].pop(0)
+                match_2.append(match_3[0])
+                match_3.pop(0)
+            else:
+                for i in hand_match:
+                    if (len(i) == 2):
+                        match_2.append(i)
             
-            self.hand = match_3 + match_2[-1]
+            self.hand = match_3[-1] + match_2[-1]
+            self.score = 7
 
-            for k in self.hand:
-                print (k.name)
+            self.highcard = match_3[0][0]
 
-            print('found full house')
+            for i in match_3[0]:
+                if (i.suit > self.highcard.suit):
+                    self.highcard = i
+
         # check for flush
         elif(hand_flush != None):
             while(len(hand_flush) > 5):
@@ -90,10 +105,10 @@ class player:
             
             self.hand = hand_flush
 
-            for k in self.hand:
-                print (k.name)
+            self.score = 6
 
-            print ('found flush')
+            self.highcard = hand_flush[-1]
+
         # check for straight
         elif(hand_straight != None):
             while(len(hand_straight) > 5):
@@ -101,10 +116,10 @@ class player:
             
             self.hand = hand_straight
 
-            for k in self.hand:
-                print (k.name)
+            self.score = 5
 
-            print ('found straight')
+            self.highcard = hand_straight[-1]
+
         # check for three of a kind
         elif(self.is_three_kind(hand_match) == 1):
             match_3 = []
@@ -115,10 +130,14 @@ class player:
 
             self.hand = match_3[-1]
 
-            for k in self.hand:
-                print (k.name)
+            self.score = 4
 
-            print ('found three of a kind')
+            self.highcard = self.hand[0]
+
+            for i in self.hand:
+                if (i.suit > self.highcard.suit):
+                        self.highcard = i
+
         # check for two pair
         elif(self.is_two_pair(hand_match)):
             match_2 = []
@@ -127,12 +146,15 @@ class player:
                 if (len(i) == 2):
                     match_2.append(i)
 
-            self.hand = match_2[-1] + match_2[-2]
+            self.hand = match_2[-2] + match_2[-1]
 
-            for k in self.hand:
-                print(k.name)
+            self.score = 3
 
-            print ('found two pair')
+            if (match_2[-1][0].suit > match_2[-1][-1].suit):
+                self.highcard = match_2[-1][0]
+            else:
+                self.highcard = match_2[-1][-1]
+
         # check for two of a kind
         elif(self.is_two_kind(hand_match)):
             match_2 = []
@@ -143,31 +165,40 @@ class player:
 
             self.hand = match_2[-1]
 
-            for k in self.hand:
-                print(k.name)
+            if (match_2[-1][0].suit > match_2[-1][-1].suit):
+                self.highcard = match_2[-1][0]
+            else:
+                self.highcard = match_2[-1][-1]
 
-            print ('found two of a kind')
+            self.score = 2
         # all that's left is the high card
         else:
-            print('only high card')
+            self.score = 1
 
-        pass
+            if(self.draw[0].value > self.draw[1].value):
+                self.highcard = self.draw[0]
+            else:
+                self.highcard = self.draw[1]
+
+
 
 
     def show_hand(self):
 
         print ('player name: ' + self.player_name)
-        print ('hand type: ' + self.hand_type)
+        print ('hand type: ' + self.get_hand_name())
         print ('high card: ' + self.highcard.name)
 
-        for i in self.draw:
-            print (i.name)
+        play_string = ""
 
-        print('')
+        for i in self.hand:
+            play_string += i.name + " "
 
-    def get_hand_name(score):
+        print("cards: " + play_string)
 
-        match score:
+    def get_hand_name(self):
+
+        match self.score:
             case 10:
                 return 'royal flush'
             case 9:
@@ -317,12 +348,12 @@ class player:
             if (len(i) == 2):
                 twos_list.append(i)
 
-        if (len(threes_list) == 0):
-            return 0
-        elif (len(twos_list) == 0):
-            return 0
-        else:
+        if (len(threes_list) == 2):
             return 1
+        elif (len(threes_list) == 1) and (len(twos_list) != 0):
+            return 1
+        else:
+            return 0
 
     def is_three_kind(self, match_list):
         if(match_list == None):
