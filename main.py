@@ -1,35 +1,33 @@
 import plain_52
 import draw
-import random
 import check
-import highcard
-import hand
-import scoring
+import player
 
 
-def test():
+deck = plain_52.create_deck()
 
-    deck = plain_52.create_deck()
-    random.shuffle(deck)
+hand = draw.type(deck, 'two of a kind')
 
-    names = ['Jeanee', 'Bob', 'Allen', 'Sam', 'Bryan']
+test_player = player.player('Jim')
 
-    players = []
+hand.sort(key=lambda x: x.value)
 
-    for i in names:
-        players.append(hand.player(deck, i))
+hand_string = ""
+
+for i in hand:
+    hand_string += i.name + ' '
+
+print(hand_string)
+
+print('')
+
+test_player.check_hand(hand)
+
+#flush_hand = test_player.get_flush(hand)
+#straight_hand = test_player.get_straight(hand)
+#match_hand = test_player.get_match(hand)
 
 
-    winner = scoring.judge(players)
-
-    for i in players:
-        i.show_hand()
-
-    print('the winner is ' + winner.player_name + ' with a ' + winner.hand_type)
-
-
-
-test()
 
 
 

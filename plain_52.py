@@ -15,45 +15,45 @@ def create_deck():
          for y in range(13):
              match y:
                  case 0:
-                     s1 = "two of "
+                     s1 = "2"
                  case 1:
-                     s1 = "three of "
+                     s1 = "3"
                  case 2:
-                     s1 = "four of "
+                     s1 = "4"
                  case 3:
-                     s1 = "five of "
+                     s1 = "5"
                  case 4:
-                     s1 = "six of "
+                     s1 = "6"
                  case 5:
-                     s1 = "seven of "
+                     s1 = "7"
                  case 6:
-                     s1 = "eight of "
+                     s1 = "8"
                  case 7:
-                     s1 = "nine of "
+                     s1 = "9"
                  case 8:
-                     s1 = "ten of "
+                     s1 = "T"
                  case 9:
-                     s1 = "jack of "
+                     s1 = "J"
                  case 10:
-                     s1 = "queen of "
+                     s1 = "Q"
                  case 11:
-                     s1 = "king of "
+                     s1 = "K"
                  case 12:
-                     s1 = "ace of "
+                     s1 = "A"
 
              match x:
                  case 0:
-                     s2 = "spades"
+                     s2 = "\u2664"
                  case 1:
-                     s2 = "clubs"
+                     s2 = "\u2667"
                  case 2:
-                     s2 = "diamonds"
+                     s2 = "\u2662"
                  case 3:
-                     s2 = "hearts"
+                     s2 = "\u2661"
 
              j += 1
 
-             deck_stack.append(Card(x, y, s1+s2, j))
+             deck_stack.append(Card(x, y, s2 + s1, j))
 
      return deck_stack
 

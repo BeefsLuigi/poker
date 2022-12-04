@@ -1,5 +1,5 @@
 
-
+import random
 
 def draw(deck, amount):
     hand = []
@@ -34,281 +34,186 @@ def type(deck, hand_type):
             hand = two_pair(deck)
         case 'two of a kind':
             hand = two_kind(deck)
+
+   
     return hand
 
 # draw royal flush for testing
 def royal_flush(deck):
+   
+    hand = sequence(deck, random.randrange(0, 4), 12, 1)
 
-    hand = []
+    fill_hand(deck, hand, 7)
 
-    while (len(hand) == 0):
-        if (deck[0].value == 12):
-            hand.append(deck[0])
-            deck.pop(0)
-        else:
-            deck.append(deck[0])
-            deck.pop(0)
-
-    while (len(hand) < 5):
-        if (deck[0].value ==  hand[-1].value - 1) and (deck[0].suit == hand[0].suit):
-            hand.append(deck[0])
-            deck.pop(0)
-        else:
-            deck.append(deck[0])
-            deck.pop(0)
-    
     return hand
 
 # draw straight flush
 def straight_flush(deck):
 
-    hand = []
+    hand = sequence(deck, random.randrange(0, 4), random.randrange(4, 12), 1)
 
-    while (len(hand) == 0):
-        if (deck[0].value < 12) and (deck[0].value > 3):
-            hand.append(deck[0])
-            deck.pop(0)
-        else:
-            deck.append(deck[0])
-            deck.pop(0)
+    fill_hand(deck, hand, 7)
 
-    while (len(hand) < 5):
-        if (deck[0].value ==  hand[-1].value - 1) and (deck[0].suit == hand[0].suit):
-            hand.append(deck[0])
-            deck.pop(0)
-        else:
-            deck.append(deck[0])
-            deck.pop(0)
-    
     return hand
-
 
 #draw only same suit for testing
 def flush(deck):
-    sample = deck[0].suit
+    random.shuffle(deck)
+
+    sample_suit = deck[0].suit
 
     hand = []
 
-    # test for flush and add to hand
+    # test for matchin suit and add to hand
     while (len(hand) < 5):
-        if (deck[0].suit == sample):
+        if (deck[0].suit == sample_suit):
             hand.append(deck[0])
-            deck.pop(0)
+            deck.pop(0)     
         else:
             deck.append(deck[0])
             deck.pop(0)
-            
+     
+    fill_hand(deck, hand, 7)
+
     return hand
 
 #draw four of a kind
 def four_kind(deck):
+    random.shuffle(deck)
+
     sample = deck[0].value
 
-    hand = []
+    hand = match_value(deck, sample, 4)
 
-    # test for same and add to hand
-    while (len(hand) < 4):
-        if (deck[0].value == sample):
-            hand.append(deck[0])
-            deck.pop(0)
-        else:
-            deck.append(deck[0])
-            deck.pop(0)
+    fill_hand(deck, hand, 7)
 
-    #draw a random card to finish hand
-    hand.append(deck[0])
-    deck.pop(0)
-            
     return hand
 
 #draw full house
 def full_house(deck):
-    sample = deck[0].value
+    sample1 = random.randrange(0, 13)
+    sample2 = random.randrange(0, 13)
 
-    hand3 = []
-    hand2 = []
+    while (sample1 == sample2):
+        sample2 = random.randrange(0, 13)
 
-    # test for same and add to hand
-    while (len(hand3) < 3):
-        if (deck[0].value == sample):
-            hand3.append(deck[0])
-            deck.pop(0)
-        else:
-            deck.append(deck[0])
-            deck.pop(0)
+    hand_part_1 = match_value(deck, sample1, 3)
+    hand_part_2 = match_value(deck, sample2, 2)
 
-    sample = deck[0].value
-    
-    while (len(hand2) < 1):
-        if (sample != hand3[0].value):
-            hand2.append(deck[0])
-            deck.pop(0)
-        else:
-            deck.append(deck[0])
-            deck.pop(0)
-    
-    while (len(hand2) < 2):
-        if (deck[0].value == hand2[0].value) and (sample != hand3[0].value):
-            hand2.append(deck[0])
-            deck.pop(0)
-        else:
-            deck.append(deck[0])
-            deck.pop(0)
+    hand = hand_part_1 + hand_part_2
 
-    return hand3 + hand2
+    fill_hand(deck, hand, 7)
+
+    return hand
 
 #draw three of a kind
 def three_kind(deck):
-    sample = deck[0].value
+    sample = random.randrange(0, 13)
 
-    hand = []
+    hand = match_value(deck, sample, 3)
 
-    # test for same and add to hand
-    while (len(hand) < 3):
-        if (deck[0].value == sample):
-            hand.append(deck[0])
-            deck.pop(0)
-        else:
-            deck.append(deck[0])
-            deck.pop(0)
-
-    #draw a random cards to finish hand
-    while (len(hand) < 4):
-        if (deck[0].value != hand[0].value):
-            hand.append(deck[0])
-            deck.pop(0)
-            break
-        else:
-            deck.append(deck[0])
-            deck.pop(0)
-
-        
-    while (len(hand) < 5):
-        if (deck[0].value != hand[3].value) and (deck[0].value != hand[0].value):
-            hand.append(deck[0])
-            deck.pop(0)
-            break
-        else:
-            deck.append(deck[0])
-            deck.pop(0)
+    fill_hand(deck, hand, 7)
 
     return hand
 
 #draw two pair
 def two_pair(deck):
-    sample1 = deck[0].value
+    sample1 = random.randrange(0, 13)
+    sample2 = random.randrange(0, 13)
 
-    handhalf1 = []
-    handhalf2 = []
-    handfull = []
+    while (sample1 == sample2):
+        sample2 = random.randrange(0, 13)
 
+    hand_part_1 = match_value(deck, sample1, 2)
+    hand_part_2 = match_value(deck, sample2, 2)
 
-    # test for same and add to hand
-    while (len(handhalf1) < 2):
-        if (deck[0].value == sample1):
-            handhalf1.append(deck[0])
-            deck.pop(0)
-        else:
-            deck.append(deck[0])
-            deck.pop(0)
-    
-    while (len(handhalf2) < 1):
-        if (deck[0].value != sample1):
-            handhalf2.append(deck[0])
-            deck.pop(0)
-        else:
-            deck.append(deck[0])
-            deck.pop(0)
+    hand = hand_part_1 + hand_part_2
 
-    sample2 = handhalf2[0].value
+    fill_hand(deck, hand, 7)
 
-    while (len(handhalf2) < 2):
-        if (deck[0].value == sample2) and (deck[0].value != sample1):
-            handhalf2.append(deck[0])
-            deck.pop(0)
-        else:
-            deck.append(deck[0])
-            deck.pop(0)
-
-    handfull = handhalf1 + handhalf2
-
-    while (len(handfull) < 5):
-        if (deck[0].value != sample1) and (deck[0].value != sample2):
-            handfull.append(deck[0])
-            deck.pop(0)
-        else:
-            deck.append(deck[0])
-            deck.pop(0)
-            
-    return handfull
+    return hand
 
 def two_kind(deck):
+
+    random.shuffle(deck)
+
     sample = deck[0].value
 
-    hand = []
+    hand = match_value(deck, sample, 2)
 
-    # test for same and add to hand
-    while (len(hand) < 2):
-        if (deck[0].value == sample):
-            hand.append(deck[0])
-            deck.pop(0)
-        else:
-            deck.append(deck[0])
-            deck.pop(0)
-
-    #draw a random cards to finish hand
-    while (len(hand) < 3):
-        if (deck[0].value != hand[0].value):
-            hand.append(deck[0])
-            deck.pop(0)
-        else:
-            deck.append(deck[0])
-            deck.pop(0)
-
-    while (len(hand) < 4):
-        if (deck[0].value != hand[0].value) and (deck[0].value != hand[2].value):
-            hand.append(deck[0])
-            deck.pop(0)
-        else:
-            deck.append(deck[0])
-            deck.pop(0)
-
-        
-    while (len(hand) < 5):
-        if (deck[0].value != hand[0].value) and (deck[0].value != hand[2].value) and (deck[0].value != hand[3].value):
-            hand.append(deck[0])
-            deck.pop(0)
-            break
-        else:
-            deck.append(deck[0])
-            deck.pop(0)
+    fill_hand(deck, hand, 7)
 
     return hand
 
-
-
-#draw only cards in order for testing
 def straight(deck):
-    hand = []
-    hand.append(deck[0])
+    
+    hand = sequence(deck, random.randrange(0, 4), random.randrange(4, 12), 0)
 
-    while (len(hand) < 2):
-        if (deck[0].value == hand[0].value + 1) or (deck[0].value == hand[0].value - 1):
-            hand.append(deck[0])
-            deck.pop(0)
-        else:
-            deck.append(deck[0])
-            deck.pop(0)
+    fill_hand(deck, hand, 7)
     
-    if (hand[0].value > hand[1].value):
-        hand.append(hand[0])
-        hand.pop(0)
-    
-    while (len(hand) < 5):
-        if (deck[0].value == hand[0].value - 1):
-            hand.insert(0, deck[0])
-            deck.pop(0)
-        elif (deck[0].value == hand[-1].value + 1):
+    return hand
+
+def sequence(deck, suit_target, limit, match_suit):
+
+    hand = []
+
+    # if a royal flush or a straight flush
+    if(match_suit == 1):
+        x = 2
+        i = 0
+
+        while (i < len(deck)):
+            if (deck[i].suit == suit_target) and (deck[i].value == limit):
+                hand.append(deck[i])
+                deck.pop(i)
+                break
+            i += 1
+
+        while(len(hand) < 5):
+            temp_index = hand[0].index - x
+            temp_card = deck[temp_index]
+
+            hand.append(temp_card)
+            deck.pop(temp_index)
+            x += 1
+    else: #if just a straight
+        random.shuffle(deck)
+        lower = 1
+        upper = 1
+
+        # find sample
+        while (len(hand) == 0):
+            if (deck[0].value == limit):
+                hand.append(deck[0])
+                deck.pop(0)
+                break
+            else:
+                deck.append(deck[0])
+                deck.pop(0)
+
+        # find the other cards
+        while(len(hand) < 5):
+            if(deck[0].value == hand[0].value - lower):
+                hand.append(deck[0])
+                deck.pop(0)
+                lower += 1
+            elif(deck[0].value == hand[0].value + upper):
+                hand.append(deck[0])
+                deck.pop(0)
+                upper += 1
+
+            else:
+                deck.append(deck[0])
+                deck.pop(0)
+
+    return hand
+
+def match_value(deck, value, amount):
+
+    hand = []
+
+    while (len(hand) < amount):
+        if (deck[0].value == value):
             hand.append(deck[0])
             deck.pop(0)
         else:
@@ -317,4 +222,9 @@ def straight(deck):
 
     return hand
 
+def fill_hand(deck, hand, amount):
+    random.shuffle(deck)
 
+    while (len(hand) < amount):
+        hand.append(deck[0])
+        deck.pop(0)
